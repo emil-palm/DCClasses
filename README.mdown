@@ -1,16 +1,21 @@
-Random code bits that i use for different projects
-DCMicroTime
-=======
+**Random code bits that i use for different projects**
 
+*DCMicroTime*
+=======
 Description:
 ------------
 Simple classs that can handle multiple microtime checks at a time.
 
 Usage:
 ------
-[[DCMicroTime microtime] startMicroTimeWithTag:100]; // Start the clock
+<code>
+// Start the clock
+[[DCMicroTime microtime] startMicroTimeWithTag:100];
 DO YOUR CODE
-[[DCMicroTime microtime] stopMicroTimeWithTag:100]; // Stop the clock
-NSLog(@"%@",[[DCMicroTime microtime] elapsedWithTag:100]); // Gives you a string in the format: "Took %f ms"
-[[DCMicrotime microtime] removeTag:100]; // Clears out the tag, and makes the memory reusable
-
+// Stop the clock
+[[DCMicroTime microtime] stopMicroTimeWithTag:100]; 
+// Gives you a string in the format: "Took %f ms"
+NSLog(@"%@",[[DCMicroTime microtime] elapsedWithTag:100]); 
+// Clears out the tag, and makes the memoryreusable 
+[[DCMicrotime microtime] removeTag:100]; 
+</code>
