@@ -16,10 +16,14 @@
   int *tags;
   int currentIndex;
   int allocationCount;
+  
+  int *freeIndexes;
+  int currentFreeIndex;  
 }
 + (DCMicroTime *) microtime;
 - (void) startMicroTimeWithTag: (int) tag;
 - (void) stopMicroTimeWithTag: (int) tag;
 - (NSString *) elapsedWithTag: (int) tag;
+- (void) removeTag: (int) tag;
 
 @end

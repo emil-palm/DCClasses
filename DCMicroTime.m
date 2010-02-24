@@ -11,9 +11,17 @@
 
 @implementation DCMicroTime
 
+- (id) init {
+  if(self = [super init]) {
+    currentIndex = 0;
+    currentFreeIndex = -1;
+  }
+  return self;
+}
+
 /** Private **/
 - (BOOL) startWithTag:(int) tag {
-  if(currentIndex == allocationCount) {
+  if(currentIndex == allocationCount && currentFreeIndex == -1) {
     if (allocationCount == 0)
       allocationCount = 3;
     else
@@ -22,10 +30,11 @@
     void *_tmpTags = realloc(tags, (allocationCount * sizeof(int)));
     void *_tmpStarted = realloc(started, (allocationCount * sizeof(clock_t)));
     void *_tmpEnded = realloc(ended, (allocationCount * sizeof(clock_t)));
+    void *_tmpFreeIndexes = realloc(freeIndexes, (allocationCount * sizeof(int)));
     
     // If the reallocation didn't go so well,
     // inform the user and bail out
-    if (!_tmpTags || !_tmpStarted || !_tmpEnded)
+    if (!_tmpTags || !_tmpStarted || !_tmpEnded || !_tmpFreeIndexes)
     {
       NSLog(@"ERROR: Couldn't realloc memory!");
       return FALSE;
@@ -35,11 +44,20 @@
     tags = (int*)_tmpTags;
     started = (clock_t*)_tmpStarted;
     ended = (clock_t*)_tmpEnded;
+    freeIndexes = (int*)_tmpFreeIndexes;
   }
   
-  tags[currentIndex] = tag;
-  started[currentIndex] = clock();
-  currentIndex++;
+  int newIndex = currentIndex;
+  if(currentFreeIndex > -1) {
+    newIndex = freeIndexes[currentFreeIndex];
+    currentFreeIndex--;
+  } else {
+    currentIndex++;
+  }
+
+  tags[newIndex] = tag;
+  started[newIndex] = clock();
+
   return TRUE;
 }
 
@@ -70,6 +88,16 @@
 
 - (void) stopMicroTimeWithTag:(int)tag {
   [self endWithIndex:[self indexForTag:tag]];
+}
+
+- (void) removeTag: (int) tag {
+  int index = [self indexForTag:tag];
+  started[index] = 0;
+  ended[index] = 0;
+  tags[index] = -1;
+  
+  currentFreeIndex++;
+  freeIndexes[currentFreeIndex] = index;  
 }
 
 - (NSString *) elapsedWithTag:(int)tag {
