@@ -65,7 +65,7 @@
 }
 
 - (void) startMicroTimeWithTag:(int)tag {
-  [self startMicroTimeWithTag:tag];
+  [self startWithTag:tag];
 }
 
 - (void) stopMicroTimeWithTag:(int)tag {
